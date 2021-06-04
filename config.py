@@ -1,1 +1,3 @@
-discord_token = "ODUwMDM1OTQ1MjcyMzc3Mzc0.YLj3qg.7upUY6niWFiSF3kJcp0bDoyiJ70"
+discord_token = "add your discord token here"
+# yes i know i leaked it, i put it in .gitignore but something happened
+# it is already changed
