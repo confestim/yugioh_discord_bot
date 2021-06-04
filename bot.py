@@ -1,9 +1,9 @@
 import discord
 from discord.ext import commands
-from config import discord_token
 import yugioh
 import asyncio
 import requests
+import os
 
 bot = commands.Bot(command_prefix='y!',
                    description='''Card price checker bot''')
@@ -57,7 +57,7 @@ async def archetype(ctx, *, name=None):
 
 loop = asyncio.get_event_loop()
 try:
-    loop.run_until_complete(bot.start(discord_token))
+    loop.run_until_complete(bot.start(os.environ["TOKEN"]))
 except KeyboardInterrupt:
     loop.run_until_complete(bot.close())
 finally:
