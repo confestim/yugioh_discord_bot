@@ -124,7 +124,7 @@ async def graph(ctx, decks=None):
             winner_number = np.append(winner_number, int(v))
             winner_names.append(k)
 
-    plt.pie(winner_number, labels=winner_names)
+    plt.pie(winner_number, labels=winner_names, startangle=90, autopct='%1.1f%%')
     plt.savefig("winners.png")
     plt.close()
     await ctx.send(file=discord.File("winners.png"))
