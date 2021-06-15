@@ -17,11 +17,12 @@ async def on_ready():
     print(bot.user.name)
     print(bot.user.id)
     print('------')
-    game = discord.Game("Check card prices! | y!help ")
+    game = discord.Game("🎴 y!help 🎴")
     await bot.change_presence(activity=game, status=discord.Status.dnd)
 
 @bot.command()
 async def card(ctx, *, name=None):
+    """"Gets price for singular card"""
     try:
 
         card = yugioh.get_card(card_name=name)
@@ -42,6 +43,7 @@ async def card(ctx, *, name=None):
 
 @bot.command()
 async def archetype(ctx, *, name=None):
+    """"Gets prices for an archetype"""
     try:
 
         card_list = yugioh.get_cards_by_name(keyword=name)
@@ -61,6 +63,7 @@ async def archetype(ctx, *, name=None):
 
 @bot.command()
 async def graph(ctx, decks=None):
+    """"Provides graphs of Yu-gi-oh games"""
     class Match:
         def __init__(self, date, player_1, deck_1, player_2, deck_2, winner):
             self.date = date
@@ -132,10 +135,17 @@ async def graph(ctx, decks=None):
         em = discord.Embed(title="Stats", colour=discord.Colour(0x8c0303))
         for k, v in winner_counter.items():
             em.add_field(name=f"{k}",value=f"{v}")
-    plt.pie(winner_number, labels=winner_names, startangle=90, autopct='%1.1f%%')
-    plt.savefig("winners.png")
-    plt.close()
-    await ctx.send(file=discord.File("winners.png"))
+
+    else:
+        ctx.send("Tell me what you want!\n`You want everything in a text form - use y!graph text`\n`How about a graph about deck winrate? -  y!graph decks`\n`Just a graph of winrates? - y!graph, but of course`")
+
+    if 'winner_names' in locals():
+        plt.pie(winner_number, labels=winner_names, startangle=90, autopct='%1.1f%%')
+        plt.savefig("winners.png")
+        plt.close()
+        await ctx.send(file=discord.File("winners.png"))
+    else:
+        await ctx.send(embed=em)
 
     await asyncio.sleep(1)
     await removeable.delete()
