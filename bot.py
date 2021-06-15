@@ -118,7 +118,7 @@ async def graph(ctx, decks=None):
             winner_number = np.append(winner_number, int(v))
             winner_names.append(k)
 
-    else:
+    elif decks == "decks":
         winner_counter = Counter(winner_decks)
         winner_number = np.array([])
         winner_names = []
@@ -127,6 +127,11 @@ async def graph(ctx, decks=None):
             winner_number = np.append(winner_number, int(v))
             winner_names.append(k)
 
+    elif decks == "text":
+        winner_counter = Counter(winners)
+        em = discord.Embed(title="Stats", colour=discord.Colour(0x8c0303))
+        for k, v in winner_counter.items():
+            em.add_field(name=f"{k}",value=f"{v}")
     plt.pie(winner_number, labels=winner_names, startangle=90, autopct='%1.1f%%')
     plt.savefig("winners.png")
     plt.close()
