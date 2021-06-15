@@ -55,6 +55,83 @@ async def archetype(ctx, *, name=None):
     except Exception as e:
         await ctx.send(e)
 
+
+@bot.command()
+async def graph(ctx, decks=None):
+    class Match:
+        def __init__(self, date, player_1, deck_1, player_2, deck_2, winner):
+            self.date = date
+            self.player_1 = player_1
+            self.deck_1 = deck_1
+            self.player_2 = player_2
+            self.deck_2 = deck_2
+            self.winner = winner
+
+    winners = []
+    winner_decks = []
+
+    channel = bot.get_channel(847137656549933096)
+    messages = await channel.history().flatten()
+
+    removeable = await ctx.send(f"📊 Creating graph from {len(messages)} entries... 📊")
+
+    for i in messages:
+
+        # example entry:
+        # 15.06.2021, Sami:Gishki vs Boyan:Spellcaster;Boyan
+        message = i.content
+
+        date = message.split(",")[0]
+        matchup = message.split(",")[1]
+
+        player_1 = matchup.split("vs")[0]
+        player_2 = matchup.split("vs")[1]
+        player_2 = player_2.split(";")[0]
+
+        name_1 = player_1.split(":")[0].strip()
+        deck_1 = player_1.split(":")[1].strip()
+
+        name_2 = player_2.split(":")[0].strip()
+        deck_2 = player_2.split(":")[1].strip()
+
+        winner = message.split(";")[1]
+
+        match = Match(date, name_1, deck_1, name_2, deck_2, winner)
+        winners.append(match.winner.strip())
+
+        print(match.winner)
+        if match.winner == match.player_1:
+            winner_decks.append(match.deck_1.strip())
+        elif match.winner == match.player_2:
+            winner_decks.append(match.deck_2.strip())
+
+        # await ctx.send(f"{match.player_1}")
+    if not decks:
+        winner_counter = Counter(winners)
+        winner_number = np.array([])
+        winner_names = []
+
+        for k, v in winner_counter.items():
+            winner_number = np.append(winner_number, int(v))
+            winner_names.append(k)
+
+    else:
+        winner_counter = Counter(winner_decks)
+        winner_number = np.array([])
+        winner_names = []
+
+        for k, v in winner_counter.items():
+            winner_number = np.append(winner_number, int(v))
+            winner_names.append(k)
+
+    plt.pie(winner_number, labels=winner_names)
+    plt.savefig("winners.png")
+    plt.close()
+    await ctx.send(file=discord.File("winners.png"))
+
+    await asyncio.sleep(1)
+    await removeable.delete()
+
 loop = asyncio.get_event_loop()
 try:
     loop.run_until_complete(bot.start(os.environ["TOKEN"]))
