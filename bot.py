@@ -4,6 +4,9 @@ import yugioh
 import asyncio
 import requests
 import os
+from collections import Counter
+import matplotlib as plt
+import numpy as np
 
 bot = commands.Bot(command_prefix='y!',
                    description='''Card price checker bot''')
